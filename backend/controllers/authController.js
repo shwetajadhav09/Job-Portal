@@ -20,6 +20,7 @@ exports.signup = async (req, res, next) => {
     }
 }
 
+
 exports.signin = async (req, res, next) => {
 
     try {
@@ -55,9 +56,14 @@ const sendTokenResponse = async (user, codeStatus, res) => {
     res
         .status(codeStatus)
         .cookie('token', token, { maxAge: 60 * 60 * 1000, httpOnly: true })
-        .json({ success: true, token, user })
+        .json({
+            success: true,
+            role: user.role
+        })
 }
 
+
+// log out
 exports.logout = (req, res, next) => {
     res.clearCookie('token');
     res.status(200).json({
@@ -66,6 +72,8 @@ exports.logout = (req, res, next) => {
     })
 }
 
+
+// user profile
 exports.userProfile = async (req, res, next) => {
 
     const user = await User.findById(req.user.id).select('-password');
